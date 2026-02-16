@@ -1,0 +1,31 @@
+class Solution {
+    public List<List<Integer>> verticalTraversal(TreeNode root) {
+        List<int[]> nodes = new ArrayList<>();
+        dfs(root, 0, 0, nodes);
+
+        nodes.sort((a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0]; // column
+            if (a[1] != b[1]) return a[1] - b[1]; // row
+            return a[2] - b[2];                   // value
+        });
+
+        List<List<Integer>> result = new ArrayList<>();
+        int prevCol = Integer.MIN_VALUE;
+
+        for (int[] n : nodes) {
+            if (n[0] != prevCol) {
+                result.add(new ArrayList<>());
+                prevCol = n[0];
+            }
+            result.get(result.size() - 1).add(n[2]);
+        }
+        return result;
+    }
+
+    private void dfs(TreeNode node, int row, int col, List<int[]> nodes) {
+        if (node == null) return;
+        nodes.add(new int[]{col, row, node.val});
+        dfs(node.left, row + 1, col - 1, nodes);
+        dfs(node.right, row + 1, col + 1, nodes);
+    }
+}
